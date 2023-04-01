@@ -1,10 +1,11 @@
+% Cambiado sin probar que funcione el número de divisiones en el método de inicialización
 function [t,x] = mab3(f,intervalo, x0, N)
 r = 3;
 met = @meuler;
 h = (intervalo(2) - intervalo(1))/N;
 t = intervalo(1):h:intervalo(2); % Se podría haber utilizado linspace
 % Paso 1
-[~, x] = met(f, [t(1), t(r)], x0, r);
+[~, x] = met(f, [t(1), t(r)], x0, r-1);
 % Transpose x
 x=x.';
 % Paso 2
@@ -24,3 +25,4 @@ x=x.';  % Convertimos la matriz x en una del tipo (N+1,n)
 % habría que modificar:
 % h/~
 % c
+% En la Práctica 4 se hace mejor
