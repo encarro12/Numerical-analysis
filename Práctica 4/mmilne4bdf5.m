@@ -10,7 +10,7 @@ r = 5;
 met = @mrk4;
 % Coeficientes de los métodos de predicción corrección
 % como métodos lineales de r pasos
-beta_pred = (4/3) * [0, 0, 2, -1, 2];
+beta_pred = (4/3) * [2, -1, 2];
 alpha_corr = (1/137) * [12, -75, 200, -300, 300];
 % De hecho se podrían poner también alpha_pred y beta_corr
 % Lo que pasa que serían vectores prácticamente nulos y en 
@@ -25,9 +25,9 @@ t = intervalo(1):h:intervalo(2);
 x = x.';
 
 % GUARDAR EVALUACIONES DE f
-y = f(t(1), x(:,1));
-for i = 2:r
-    y(:,i) = f(t(i),x(:,i));
+y = zeros(size(x, 1), r - 2);
+for i = 1:r - 2
+    y(:,i) = f(t(i + 2),x(:,i + 2));
 end
 
 % BUCLE
@@ -36,10 +36,12 @@ for i = 1:N-r+1
     x(:,i+r) = x(:,i+1) + h*y*(beta_pred.');
     % Evaluación-Corrección (EC)**m
     for j = 1:m
-        x(:,i+r) = x(:,i:i+r-1)*(alpha_corr.') + (60/137)*h*f(t(i+r),x(:,i+r));
+        x(:,i+r) = x(:,i:i+r-1)*(alpha_corr.') + (60/137)*h*f(t(i+r), x(:,i+r));
     end
     % Evaluación
-    y = [y(:,2:r), f(t(i+r), x(:,i+r))];
+    if i <= N-r
+        y = [y(:,2:r-2), f(t(i+r), x(:,i+r))];
+    end
 end
 
 t=t(:); % Convertimos t en vector columna del tipo (N+1,1)
